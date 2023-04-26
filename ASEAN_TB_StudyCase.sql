@@ -1,10 +1,13 @@
+-- Raw data for this project extracted from https://ourworldindata.org/causes-of-death.
+-- While importing data, some of the information on the raw data had been changed, such as the name of the table and the name of the columns were changed, and only keeping the column that related to the study case.
+
 select * from tb_toddler;
 Select * from tb_minor;
 Select * from tb_youngadult;
 Select * from tb_adult;
 Select * from tb_senioradult;
 
--- joining table
+-- Filtering and joining table
 
 SELECT T.Entity, T.Code, T.Year,
 	T.DN_Toddler, M.DN_Minor, Y.DN_Youngadult, A.DN_Adult, S.DN_SeniorAdult
@@ -15,7 +18,7 @@ JOIN tb_adult A on T.Code=A.Code AND T.Entity=A.Entity AND T.Year=A.Year
 JOIN tb_senioradult S on T.Code=S.Code AND T.Entity=S.Entity AND T.Year=S.Year
 where T.Entity IN ('Indonesia', 'Malaysia', 'Singapore', 'Thailand', 'Brunei', 'Philippines', 'Cambodia', 'Myanmar', 'Laos', 'Vietnam');
 
--- creating table
+-- creating table of tb_death_asean
 
 drop table if exists tb_death_asean
 create table tb_death_asean
@@ -55,7 +58,7 @@ JOIN tb_adult A on T.Code=A.Code AND T.Entity=A.Entity AND T.Year=A.Year
 JOIN tb_senioradult S on T.Code=S.Code AND T.Entity=S.Entity AND T.Year=S.Year
 where T.Entity IN ('Indonesia', 'Malaysia', 'Singapore', 'Thailand', 'Brunei', 'Philippines', 'Cambodia', 'Myanmar', 'Laos', 'Vietnam');
 
- -- total case per country each year
+ -- total death caused by TB per country each year
  
 select Country, 
 sum(TB_DN_Toddler) totaldn_toddler, sum(TB_DN_Minor) totaldn_minor, sum(TB_DN_YoungAdult) totaldn_YoungAdult, sum(TB_DN_Adult) totaldn_adult, sum(TB_DN_SeniorAdult) totaldn_senioradult,
@@ -91,7 +94,7 @@ where year between 1999 and 2019
 group by Country, year;
 
 
---  total case per year in asean
+--  Total death caused by TB per year in ASEAN
 select Year, sum(TB_DN_Toddler), sum(TB_DN_Minor), sum(TB_DN_YoungAdult), sum(TB_DN_Adult), sum(TB_DN_SeniorAdult)
 from tb_death_asean
 group by Year
@@ -110,7 +113,7 @@ join table_dntotal b on a.Year=b.Year
 where a.Year='1999'
 order by percentage desc;
 
--- Creating another table for further analysis
+-- Creating another table and inserting data for further analysis
 select *
 from population_demography;
 
@@ -118,6 +121,7 @@ alter table population_demography
 rename column 'Countryname' to Country
 
  DROP TABLE AseanPopulationDemography
+ 
  CREATE TABLE AseanPopulationDemography
 (
 CountryName Varchar (65),
